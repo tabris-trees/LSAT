@@ -15,13 +15,13 @@
 
 function testpop(setnumber,set,filenumber)
     %input settings
-    tp = 0.5;
+    tp0 = 0.5; % 质子的初始温度？
     mp = 1.0;
     e = 1.0;
     wp = 1.0;
     beta = 0.01;
-    vthp = 1.0; % vthp=sqrt(beta)*va
     va = 10.0;
+    vthp = sqrt(beta)*va; % vthp=sqrt(beta)*va
     b0 = 1.0;
     kappa = set(8);
     Nw = set(3);
@@ -66,20 +66,23 @@ function testpop(setnumber,set,filenumber)
     aplpa = set(6); % 波的传播方向
     %calculate plasma parameters
 
-    maxw = max(wa);
-    maxknumber = maxw/va;
-    wavelength = 2*pi/maxknumber;
+    % maxw = max(wa);
+    % maxknumber = maxw/va;
+    % wavelength = 2*pi/maxknumber;
     
     
     %set simulation domain
     % dx = wavelength/10;
     l = 1080*va;
+    % l = set(12)*va;
     dx = 20;
+    % dx = set(13);
 %     dx = 24*pi; % 24Π*24Π的模拟尺度
     dt = 0.025; % 时间取0.025*Ωp^-1
     ts = set(7);
     ng = l/dx; % 网格个数
     n = 10000; % 153600个质子
+    % n = set(11);
     nt = ts/dt;
     
     
@@ -90,16 +93,17 @@ function testpop(setnumber,set,filenumber)
     
     kz = wa/va;
     kx = tan(aplpa)*kz;
-    vaz = va;
-    vax = va*tan(aplpa);
+    % vaz = va;
+    % vax = va*tan(aplpa);
+
     %%
     %initial
-    x=(1:n)*0;
-    y=x;
-    z=x;
-    vx=x;
-    vy=x;
-    vz=x;
+    % x=(1:n)*0;
+    % y=x;
+    % z=x;
+    % vx=x;
+    % vy=x;
+    % vz=x;
 
     rng(1);
     % pphi_k = (0.+rand(1,Nw).*30)/360*(2*pi);
@@ -129,13 +133,14 @@ function testpop(setnumber,set,filenumber)
     EE(1:n)=2;
 %     Wa(1:n)=wa;
 
-    bb0(1:n)=b0;
+    % bb0(1:n)=b0;
     
     
     %load
     v0z = set(9)*va;
     v0 = [0,0,v0z];
-    [r,vv] = dom(l,n,v0,vthp,kappa);
+    l0 = set(10)*l; % 粒子放置的初始位置（z方向总长度的分数倍）
+    [r,vv] = dom(l0,n,v0,vthp,kappa);
     x = r(1,:); y = r(2,:); z = r(3,:);
     vx = vv(1,:); vy = vv(2,:); vz = vv(3,:);
 
@@ -288,7 +293,7 @@ function testpop(setnumber,set,filenumber)
 
     % lab frame
 
-        psi_k = wa_k*i*dt-(kx_k.*x'+kz_k.*z');
+        psi_k = wa_k*i*dt-(kz_k.*z')+phi_k;
         bx=sum(bk.*cos(psi_k),2)';
         by=-sum(bk.*sin(psi_k),2)';
         bz(1:n)=b0;

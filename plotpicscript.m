@@ -61,15 +61,15 @@ clf;
 % for iii = 1:2
 % subplot(1,2,iii)
 names = [];
-for i = 3:3
+for i = 4:4
     % figure(2);
     % clf;
     % names = [];
     % linemark = linemarks{i};
     linemark = '-';
-    for ii = 1:2
+    for ii = 1:4
         % subplot(2, 2, ii);
-        name=vparaplot(['setup-',num2str(i),'\set',num2str(ii),'\Txyz.dat'],ii,2000,[1,8],i);
+        name=vparaplot(['setup-',num2str(i),'\set',num2str(ii),'\Txyz.dat'],ii,5000,[2],i);
         names = [names,name];
         % title(name);
     end
@@ -80,7 +80,7 @@ end
 h = legend(names,'Location','southeast');
 title('the U_{||} evolution with time');
 % end
-print(gcf,'setup-2/upara.jpg','-r600','-djpeg');
+print(gcf,'setup-4/upara.jpg','-r600','-djpeg');
 
 %######################################################################################################
 
@@ -122,30 +122,34 @@ end
 %#####################################################################################################
 
 %% the velocitys space
-setupindex = '3';
-figure(76);
-set(gcf,'Units','centimeters','Position',[2 2 35 14]);
+clear;
+setupindex = '4';
+setindex = '1';
+figure(str2double(setindex));
+set(gcf,'Units','centimeters','Position',[2 2 40 14]);
 clf;
-sets = ['setup-',setupindex,'/set',num2str(1)];
-plottimes = [0,20,40,80,160,320,640,1280,1600,2000];
+sets = ['setup-',setupindex,'/set',setindex];
+
+% plottimes = [0,20,40,80,160,320,640,1280,1600,2000];
+% for plottime = 1:length(plottimes)-1
+%     subplot(2,6,plottime);
+%     velocityspace(sets,num2str(plottimes(plottime)),num2str(plottimes(plottime)));
+%     subplot(2,6,plottime+6);
+%     velocityspace(sets,num2str(plottimes(plottime+1)),num2str(plottimes(plottime)));
+
 pic_num = 1;
-% for plottime = linspace(0,2000,101)
-%     velocityspace(sets,num2str(plottime));
-
-for plottime = 1:length(plottimes)
-    subplot(2,5,plottime);
-    velocityspace(sets,num2str(plottimes(plottime)));
-
-%     drawnow;
-%     F=getframe(gcf);
-%     I=frame2im(F);
-%     [I,map]=rgb2ind(I,256);
-%     gifname = 'pitchangle.gif';
-%     if pic_num == 1
-%         imwrite(I,map,gifname,'gif','Loopcount',inf,'DelayTime',0.2);
-%         pic_num = 2;
-%     else
-%         imwrite(I,map,gifname,'gif','WriteMode','append','DelayTime',0.2);
-%     end
+for plottime = linspace(0,5000,101)
+    velocityspace(sets,num2str(plottime),num2str(plottime));
+    drawnow;
+    F=getframe(gcf);
+    I=frame2im(F);
+    [I,map]=rgb2ind(I,256);
+    gifname = ['setup-',setupindex,'/pitch-4.gif'];
+    if pic_num == 1
+        imwrite(I,map,gifname,'gif','Loopcount',inf,'DelayTime',0.2);
+        pic_num = 2;
+    else
+        imwrite(I,map,gifname,'gif','WriteMode','append','DelayTime',0.2);
+    end
 end
-print(gcf,['setup-',setupindex,'/pitch.png'],'-r600','-dpng');
+% print(gcf,['setup-',setupindex,'/pitch','-',setindex,'.png'],'-r600','-dpng');
