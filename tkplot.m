@@ -1,8 +1,8 @@
-function name = tkplot(txyz,sets,xmax,posi,setup)
+function name = tkplot(txyz,sets,xmax,posi,setup,header)
     name0 = '';
     setfile = importdata(['setup\setup',num2str(setup),'.txt']);
     setdata = setfile.data(sets,:);
-    header = ["w1","Nw","q","\sum b_k^2","aplpa","time","\kappa"];
+    
     for x = 1:length(posi)
         index = posi(x);
         setsvalue = num2str(setdata(index+1));

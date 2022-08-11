@@ -1,8 +1,7 @@
-function name=taniso(txyz,sets,xmax,posi,setup)
+function name=taniso(txyz,sets,xmax,posi,setup,header)
     name0 = '';
     setfile = importdata(['setup\setup',num2str(setup),'.txt']);
     setdata = setfile.data(sets,:);
-    header = ["w1","Nw","q","\sum b_k^2","aplpa","time","\kappa"];
     for x = 1:length(posi)
         index = posi(x);
         setsvalue = num2str(setdata(index+1));
@@ -37,7 +36,7 @@ function name=taniso(txyz,sets,xmax,posi,setup)
 %     yticks(0:2:16);
     % xticklabels(lable);
     xlim([0,xmax]);
-    ylim([0,3]);
+    % ylim([0,10]);
     xlabel('\Omega_{p}t');
     ylabel('$T_{\perp}/T_{\parallel}$',"Interpreter","latex")
 end

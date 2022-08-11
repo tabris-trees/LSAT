@@ -1,8 +1,7 @@
-function name=templot(txyz,sets,xmax,posi,setup)
+function name=templot(txyz,sets,xmax,posi,setup,header)
     name0 = '';
     setfile = importdata(['setup\setup',num2str(setup),'.txt']);
     setdata = setfile.data(sets,:);
-    header = ["w1","Nw","q","\sum b_k^2","aplpa","time","\kappa"];
     for x = 1:length(posi)
         index = posi(x);
         setsvalue = num2str(setdata(index+1));
@@ -40,12 +39,12 @@ function name=templot(txyz,sets,xmax,posi,setup)
     xlim([0,xmax]);
 %     ylim([0,50]);
     xlabel('\Omega_{p}t');
-    ylabel('T/T_{0}')
+    ylabel('T_{||} and T_{\perp}');
     perptext=strcat("T_{\perp}");
     paratext=strcat("T_{||}");
     % text(xmax*0.7,txy((xmax*40)*0.7),perptext,"Interpreter","latex",'Color',p1c);
     % text(xmax ...
     % *0.7,tz(xmax*40*0.7),paratext,"Interpreter","latex","Color",p1c);
-    legend(paratext, perptext, 'Location', 'southeast');
+%     legend(paratext, perptext, 'Location', 'southeast');
 
 end

@@ -1,4 +1,4 @@
-function phaseplot(sets, filenames)
+function phaseplot(sets, filenames,l)
     filename=strcat(sets,'\zVxyz',filenames,'.dat');
     disp(filename);
     labeltext=strcat('\Omega_{p}t=',filenames);
@@ -16,6 +16,7 @@ function phaseplot(sets, filenames)
     ylabel('V_{x}/V_{A}');
     xlabel('Z\Omega_{p}/V_{A}');
     text(100,1.6,labeltext); 
+    xlim([0,l]);
     ylim([-2.5,2.5]);
 %     ylim([-2,2]);
     
@@ -28,7 +29,7 @@ function phaseplot(sets, filenames)
     ylabel('V_{z}/V_{A}');
     xlabel('Z\Omega_{p}/V_{A}');
     text(100,1.6,labeltext);
-    % xlim([0,1000]);
+    xlim([0,l]);
     ylim([-1,3]);
 %     axis([3000,4500,-2,2]);
     

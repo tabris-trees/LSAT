@@ -4,7 +4,7 @@ clear variables
 
 %read setup
 
-for i = 3:3
+for i = 1:1
 
     filename = ['setup\setup',num2str(i),'.txt'];
 

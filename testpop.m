@@ -47,8 +47,8 @@ function testpop(setnumber,set,filenumber)
     % % bk = sqrt(0.09)*b0;
 
     w1 = set(2)*wp;
-    % wN = w1+0.08;
-    wa = ones(1,Nw)*w1;
+    wN = set(14)*wp;
+    wa = linspace(w1,wN,Nw);
     % wa = w1;
     %% 
     % $$\sum_k{B_k^2/B_0^2} = 0.013,\ \mathrm{and}\ (B_j/B_1)^2 = (\omega_j/\omega_1)^{-q},\ 
@@ -73,16 +73,19 @@ function testpop(setnumber,set,filenumber)
     
     %set simulation domain
     % dx = wavelength/10;
-    l = 1080*va;
-    % l = set(12)*va;
-    dx = 20;
-    % dx = set(13);
+    % l = 1080*va;
+%     l = set(12)*va*((2*pi)/w1);
+    l = set(12)*va;
+    % dx = 20;
+    dx = set(13);
 %     dx = 24*pi; % 24Π*24Π的模拟尺度
-    dt = 0.025; % 时间取0.025*Ωp^-1
+    % dt = 0.025; % 时间取0.025*Ωp^-1
+    dt = set(15);
     ts = set(7);
     ng = l/dx; % 网格个数
-    n = 10000; % 153600个质子
-    % n = set(11);
+    % n = 10000; % 153600个质子
+    n = set(11);
+    disp(n);
     nt = ts/dt;
     
     
@@ -108,7 +111,7 @@ function testpop(setnumber,set,filenumber)
     rng(1);
     % pphi_k = (0.+rand(1,Nw).*30)/360*(2*pi);
     % pphi_k = [0];
-    pphi_k = linspace(0,pi/6,Nw);
+    pphi_k = linspace(0,set(16),Nw);
     if Nw == 1
         pphi_k = 0;
     end
@@ -140,7 +143,7 @@ function testpop(setnumber,set,filenumber)
     v0z = set(9)*va;
     v0 = [0,0,v0z];
     l0 = set(10)*l; % 粒子放置的初始位置（z方向总长度的分数倍）
-    [r,vv] = dom(l0,n,v0,vthp,kappa);
+    [r,vv] = dom(l0,n,v0,vthp,kappa,va);
     x = r(1,:); y = r(2,:); z = r(3,:);
     vx = vv(1,:); vy = vv(2,:); vz = vv(3,:);
 
@@ -152,7 +155,7 @@ function testpop(setnumber,set,filenumber)
     filesaver = ['setup-',num2str(filenumber),'/set',num2str(setnumber)];
     mkdir(filesaver);
     file2=fopen([filesaver,'/Txyz.dat'],'w');
-    filep = fopen([filesaver,'/poincare_data.dat'],'w');
+    % filep = fopen([filesaver,'/poincare_data.dat'],'w');
 %     file2=fopen([filesaver,'-Txyz.dat'],'w');
     for i=1:nt
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -180,8 +183,8 @@ function testpop(setnumber,set,filenumber)
         vxys_th_azi=sum_vx_pzi;
         vzs_th_azi=sum_vx_pzi;
         %count and compute the avrange
-        pep=z/dx;
-        ziep=ceil(pep);
+        pep=z/dx; 
+        ziep=ceil(pep); % 位于第几个网格
         inform=[ziep;vx;vy;vz];
         for p=1:n
             zi=inform(1,p);
@@ -247,7 +250,7 @@ function testpop(setnumber,set,filenumber)
         fprintf(file2,'%.5f\t%.5f\t%.5f\t%.5f\n',txy,tz,tk,vzla);    
         
         
-        if mod(i*100,nt)==0
+        if mod(i*10,nt)==0
             disp(strcat(num2str(i*100/nt),'% of set',num2str(setnumber),'of',num2str(filenumber)));
         end
         
@@ -366,9 +369,9 @@ function testpop(setnumber,set,filenumber)
                 z(p)=z(p)+l;
             end
                 
-            if vy(p) > 0 && vlasty(p) < 0
-                fprintf(filep,'%.5f\t%.5f\t%.5f\t%.5f\t%.5f\n',i*dt,z(p),vz(p),vx(p),vy(p));
-            end            
+            % if vy(p) > 0 && vlasty(p) < 0
+            %     fprintf(filep,'%.5f\t%.5f\t%.5f\t%.5f\t%.5f\n',i*dt,z(p),vz(p),vx(p),vy(p));
+            % end            
         end
         
         
@@ -376,11 +379,12 @@ function testpop(setnumber,set,filenumber)
         % Program end
     end
     fclose(file2);
+    fclose(filep);
     toc;
     disp(['运行时间: ',num2str(toc)]);
 end
 %%
-function [r,vv]=dom(l,n,v0,vth,kappa)
+function [r,vv]=dom(l,n,v0,vth,kappa,va)
     L(1:n)=l;
 %     disp(L);
     s=rand(3,n);
@@ -394,6 +398,12 @@ function [r,vv]=dom(l,n,v0,vth,kappa)
         vvx = normrnd(v0(1), vth, 1, n);
         vvy = normrnd(v0(2), vth, 1, n);
         vvz = normrnd(v0(3), vth, 1, n);
+        vv = [vvx;vvy;vvz];
+    elseif kappa == 0
+        disp('Uniform distribution!')
+        vvx = zeros(1,n);
+        vvy = zeros(1,n);
+        vvz = linspace(-1,2,n)*va;
         vv = [vvx;vvy;vvz];
     else
         disp('Kappa distribution!')
